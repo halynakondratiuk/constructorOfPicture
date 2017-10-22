@@ -1,0 +1,158 @@
+<html class="" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Конструктор</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/jquery-1.11.3.min.js"></script>
+    <script src="./js/vue.js"></script>
+</head>
+<body class="constructor-page">
+<main>
+    <div class="container_12">
+        <div class="grid_12">
+            <div id="constructor" class="constructor-block">
+                <div class="cb-top-line">
+                    <div v-for="step in steps" v-bind:class="['cb-step', step.isActive ? 'cb-step--current' : '']" v-bind:id="step.id"
+                        v-on:click="selectStep(step)">
+                        <p>
+                            <span>{{step.index}}</span>
+                            {{step.title}}
+                        </p>
+                    </div>
+                </div>
+                <div class="cb-result">
+                    <div class="cb-result__title">
+                        <p>Ваша картина</p>
+                    </div>
+                    <div class="cb-result__content">
+                        <p class="cb-result__data">
+                            <span>Изображение:</span>
+                            <strong></strong>
+                            <strong>{{result.picture ? result.picture.title : 'Не выбрано'}}</strong>
+                        </p>
+                        <p class="cb-result__data">
+                            <span>Рама:</span>
+                            <strong></strong>
+                            <strong>{{result.border ? result.border.title : 'Не выбрано'}}</strong>
+                        </p>
+                        <div class="cb-result__data">
+                            <span>Отпечатки:</span>
+                            <strong v-if="result.marks.length == 0">Не выбраны</strong>
+                            <img v-for="mark in result.marks" :src="mark.src" :alt="mark.alt" :width="32" :height="32">
+
+                        </div>
+                        <div class="cb-result__object">
+                            <div class="cb-result__img">
+                                <img v-if="result.picture!=null" v-bind:src="result.picture.src" :alt="result.picture.alt" :title="result.picture.title" :width="result.picture.width" :height="result.picture.height">
+                            </div>
+                            <div class="cb-result__border">
+                            <img v-if="result.border!=null" v-bind:src="result.border.src" :alt="result.border.alt" :title="result.border.title" :width="result.border.width" :height="result.border.height">
+                            </div>
+                            <p :class="['cb-result__text__title', fonts[currentFont].id]">{{description.title}}</p>
+                            <p :class="['cb-result__text__name', fonts[currentFont].id]">{{description.name}}</p>
+                            <p :class="['cb-result__text__date', fonts[currentFont].id]">{{description.date}}</p>
+                        </div>
+                    </div>
+                    <div class="cb-result__bottom">
+                        <form action="" method="POST">
+                            <p v-if="currentStep < steps.length - 1" :class="['cb-next', addClass]" v-on:click="nextStep">Далее</p>
+                            <p v-if="currentStep == steps.length - 1" class="cb-next">В корзину</p>
+                            <input name="result" id="" type="text" hidden="">
+                        </form>
+                    </div>
+                </div>
+                <div class="cb-wrapper">
+                    <div id="cb-items" v-bind:class="steps[currentStep].class">
+                        <div class="cb-item">
+                            <p class="cb-item__title">
+                                Выберите изображение
+                            </p>
+                            <p class="cb-item__text">
+                                для начала выберите основу, саму картину, на которую вы и гости вашего праздника будете
+                                наносить отпечатки пальцев с пожеланиями
+                            </p>
+                            <div class="cb-item-pics">
+                                <div v-for = "picture in pictures" v-bind:class="['cb-item-pic', picture.isSelected ? 'current' : '']" v-on:click="selectPicture(picture)">
+                                    <img v-bind:src="picture.src" :alt="picture.alt" :title="picture.title" :width="picture.width"
+                                         :height="picture.height">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cb-item">
+                            <p class="cb-item__title">
+                                Рама
+                            </p>
+                            <p class="cb-item__text">
+                                подберите раму, которая подойдет случаю и впишется в интерьер, ведь вы же не просто
+                                оставляете "пальчики", а создаете предмет декора для дома и офиса:
+                            </p>
+                            <div class="cb-item-borders">
+                                <div v-for = "border in borders" v-bind:class="['cb-item-border', border.isSelected ? 'current' : '']" v-on:click="selectBorder(border)">
+                                    <img :src="border.src" :alt="border.alt" :title="border.title"
+                                         :width="border.width" :height="border.height">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cb-item">
+                            <p class="cb-item__title">
+                                Заголовок
+                            </p>
+                            <p class="cb-item__text">
+                                персонализируйте ваше "Дерево пожеланий"; вверху и внизу картины есть специальные поля,
+                                которые можно заполнить по вашему усмотрению: вписать имена виновников торжества, или
+                                особые пожелания, добавить дату, или логотип компании, если речь идет о корпоративном
+                                подарке.
+                            </p>
+                            <div class="cb-item__line">
+                                <input v-model = "description.title" id="pic-title" placeholder="Наша Свадьба" maxlength="22" type="text">
+                                <span>Заголовок картины</span>
+
+                            </div>
+                            <div class="cb-item__line">
+                                <input v-model = "description.name" id="pic-name" placeholder="Анастасия и Константин" maxlength="36" type="text">
+                                <span>Подпись</span>
+                            </div>
+                            <div class="cb-item__line">
+                                <input v-model = "description.date" id="pic-date" placeholder="29 июля 2015" maxlength="26" type="text">
+                                <span>Дата события</span>
+                            </div>
+                            <div class="cb-item__line--btns">
+                                <span  v-for="font in fonts" v-bind:class="['btn-font', font.isActive ? 'btn-font--active' : '']" v-bind:id="font.id" v-on:click="selectFont(font)">
+									{{font.name}}
+								</span>
+                            </div>
+                        </div>
+
+
+                        <div class="cb-item">
+                            <p class="cb-item__title">
+                                Цвет отпечатков
+                            </p>
+                            <p class="cb-item__text">
+                                наконец, подберите самые подходящие цвета красок, с помощью которых вы и оставите на
+                                картине свой след на память!<br>
+                                <strong>Обратите внимание: более 2-х цветов увеличат стоимость</strong>
+                            </p>
+
+                            <div class="cb-item-marks">
+                                <div v-for="mark in marks" v-bind:class="['cb-item-mark', mark.isSelected ? 'current' : '']" 
+                                    v-on:click="selectMark(mark)">
+                                    <img :src="mark.src" :alt="mark.alt" :width="mark.width" :height="mark.height">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cb-bottom-line">
+                    <div class="cb-total">
+                        <span class="cb-total__text">Стоимость:</span><span class="cb-total__amount"> 550</span>
+                        <span class="cb-total__currency"> грн</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script src="./js/index.js"></script>
+</body>
+</html>
